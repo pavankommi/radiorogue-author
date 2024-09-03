@@ -1,5 +1,5 @@
 "use client";
-import React, { ChangeEvent, useRef } from 'react';
+import React, { ChangeEvent, useRef, useState } from 'react';
 
 interface ImagePickerProps {
     selectedImage: string | null;
@@ -23,15 +23,36 @@ const ImagePicker: React.FC<ImagePickerProps> = ({
     setImageDescription,
 }) => {
     const fileInputRef = useRef<HTMLInputElement | null>(null);
+    const [uploading, setUploading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
-    const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const handleImageChange = async (e: ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setSelectedImage(reader.result as string);
-            };
-            reader.readAsDataURL(file);
+            setUploading(true);
+            setError(null);
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                const response = await fetch('http://localhost:3000/api/upload', {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to upload image');
+                }
+
+                const data = await response.json();
+                setSelectedImage(data.url); // Set the image URL
+                setImageSource(data.url); // Set the image source to the uploaded URL
+            } catch (error) {
+                setError('Error uploading the image');
+            } finally {
+                setUploading(false);
+            }
         }
     };
 
@@ -65,6 +86,8 @@ const ImagePicker: React.FC<ImagePickerProps> = ({
                     </button>
                 )}
             </div>
+            {uploading && <p className="text-blue-500 mt-4">Uploading...</p>}
+            {error && <p className="text-red-500 mt-4">{error}</p>}
             {selectedImage && (
                 <div className="mt-4">
                     <img
