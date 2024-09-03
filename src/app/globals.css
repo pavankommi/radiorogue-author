@@ -1,33 +1,63 @@
+/* globals.css */
+
+/* Import Tailwind CSS */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+/* Import any additional custom styles here */
+
+/* Basic reset for consistent cross-browser styling */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
-}
-
+/* Set base font styles */
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  color: #333;
+  background-color: #f9f9f9;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+/* Make the editor area more prominent */
+.ProseMirror {
+  min-height: 400px;
+  /* Adjust based on your preference */
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 16px;
+  background-color: #fff;
+}
+
+/* Styling for blockquotes */
+.ProseMirror blockquote {
+  border-left: 4px solid #007bff;
+  padding-left: 16px;
+  margin: 0;
+  font-style: italic;
+  color: #555;
+}
+
+/* Styling for code blocks */
+.ProseMirror pre {
+  background-color: #f4f4f4;
+  padding: 16px;
+  border-radius: 4px;
+  overflow-x: auto;
+}
+
+/* Styling for links */
+.ProseMirror a {
+  color: #007bff;
+  text-decoration: underline;
+}
+
+/* Optional: Additional styling for the editor */
+.editor-toolbar {
+  border-bottom: 1px solid #ddd;
+  padding: 8px;
+  background-color: #fff;
 }
