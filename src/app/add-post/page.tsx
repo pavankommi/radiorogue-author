@@ -30,6 +30,22 @@ const AddPost = () => {
     const [postedBy, setPostedBy] = useState<string>(''); //66d7b8466e7f3bddb2563867 mine
     const [isLoading, setIsLoading] = useState(false);
 
+    const resetForm = () => {
+        setHeading('');
+        setShortSummary('');
+        setArticleAuthor('');
+        setSource('');
+        setLinks([]);
+        setSelectedImage(null);
+        setImageSource('');
+        setAltText('');
+        setImageDescription('');
+        setEditorContent('');
+        setStatus('draft');
+        setCategories([]);
+        setPostedBy('');
+    };
+
     // Handle category change and enforce the 3-category limit
     const handleCategoryChange = (selectedCategories: string[]) => {
         if (selectedCategories.length <= 3) {
@@ -86,6 +102,7 @@ const AddPost = () => {
 
                 if (response.ok) {
                     toast.success('Blog post saved successfully!');
+                    resetForm(); // Reset the form on successful post
                     // Additional actions can be added here
                 } else {
                     toast.error(`Failed to save blog post: ${data.error || 'Unknown error'}`);

@@ -1,17 +1,8 @@
-import Link from 'next/link';
-
 const Header = () => (
-    <header className="text-black p-6 border-b border-gray-200">
-        <div className="flex items-center justify-between">
-            <h1 className="text-3xl font-extrabold italic text-red-600">RADIOROGUE</h1>
-            {/* <div className="flex space-x-4">
-                <Link href="/author-signin">
-                    <button className="bg-red-600 text-white font-semibold py-2 px-4 rounded hover:bg-red-700">
-                        Author Signin
-                    </button>
-                </Link>
-            </div> */}
-        </div>
+    <header className="text-black p-4 md:p-6 mt-0 border-b border-gray-200 fixed top-0 left-0 right-0 z-40 bg-white flex justify-center items-center w-full" role="banner">
+        <h1 className="text-center text-xl font-extrabold italic text-red-600 md:text-3xl w-full">
+            RADIOROGUE
+        </h1>
     </header>
 );
 
