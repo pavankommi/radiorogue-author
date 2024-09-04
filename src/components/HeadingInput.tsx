@@ -9,7 +9,7 @@ interface HeadingInputProps {
 }
 
 const HeadingInput: React.FC<HeadingInputProps> = ({ label, placeholder, value, onChange }) => {
-    const maxLength = 100;
+    const maxLength = 300;
     return (
         <div className="mt-4">
             <label className="block text-lg font-medium text-black">

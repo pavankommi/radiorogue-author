@@ -7,6 +7,7 @@ import ShortSummaryInput from '@/components/ShortSummaryInput';
 import SourceInput from '@/components/SourceInput';
 import dynamic from 'next/dynamic';
 import { Link } from '../../types/types'; // Adjust the path if necessary
+import { toast, Toaster } from 'react-hot-toast'; // Import React Hot Toast
 
 const TipTapEditor = dynamic(() => import('../../components/TipTapEditor'), {
     ssr: false,
@@ -34,14 +35,14 @@ const AddPost = () => {
         if (selectedCategories.length <= 3) {
             setCategories(selectedCategories);
         } else {
-            alert("You can only select up to 3 categories.");
+            toast.error("You can only select up to 3 categories.");
         }
     };
 
     // Prepare and send the blog post data
     const handlePostBlog = async () => {
         if (!heading || !shortSummary || !articleAuthor || !editorContent) {
-            alert('Please fill in all required fields.');
+            toast.error('Please fill in all required fields.');
             return;
         }
 
@@ -84,23 +85,22 @@ const AddPost = () => {
                 const data = await response.json();
 
                 if (response.ok) {
-                    alert('Blog post saved successfully!');
+                    toast.success('Blog post saved successfully!');
                     // Additional actions can be added here
                 } else {
-                    alert(`Failed to save blog post: ${data.error || 'Unknown error'}`);
+                    toast.error(`Failed to save blog post: ${data.error || 'Unknown error'}`);
                 }
             } else {
                 console.error('Unexpected content type:', contentType);
-                alert('Failed to save blog post: Unexpected response format');
+                toast.error('Failed to save blog post: Unexpected response format');
             }
         } catch (error) {
             console.error('Error:', error);
-            alert('An error occurred while saving the blog post.');
+            toast.error('An error occurred while saving the blog post.');
         } finally {
             setIsLoading(false);
         }
     };
-
 
     // Function to generate a slug from heading (you might need to adjust it based on your needs)
     const generateSlug = (heading: string) => {
@@ -113,6 +113,7 @@ const AddPost = () => {
 
     return (
         <div className="container mx-auto p-6 bg-white rounded-lg shadow-lg max-w-3xl"> {/* Increased width */}
+            <Toaster /> {/* Add the Toaster component */}
             <h1 className="text-3xl font-bold mb-6 text-center text-gray-800">Write a New Blog Post</h1>
 
             <div className="space-y-4">
@@ -213,8 +214,9 @@ const AddPost = () => {
                 <button
                     onClick={handlePostBlog}
                     className="mt-4 w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+                    disabled={isLoading} // Disable the button while loading
                 >
-                    Post Blog
+                    {isLoading ? 'Posting...' : 'Post Blog'}
                 </button>
             </div>
         </div>
