@@ -9,7 +9,7 @@ interface ShortSummaryInputProps {
 }
 
 const ShortSummaryInput: React.FC<ShortSummaryInputProps> = ({ label, placeholder, value, onChange }) => {
-    const maxLength = 160;
+    const maxLength = 600;
 
     return (
         <div className="mt-4">

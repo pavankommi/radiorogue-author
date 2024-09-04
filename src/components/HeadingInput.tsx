@@ -9,7 +9,7 @@ interface HeadingInputProps {
 }
 
 const HeadingInput: React.FC<HeadingInputProps> = ({ label, placeholder, value, onChange }) => {
-    const maxLength = 60;
+    const maxLength = 100;
     return (
         <div className="mt-4">
             <label className="block text-lg font-medium text-black">
@@ -19,7 +19,7 @@ const HeadingInput: React.FC<HeadingInputProps> = ({ label, placeholder, value, 
                 type="text"
                 placeholder={placeholder}
                 value={value}
-                maxLength={60}
+                maxLength={maxLength}
                 onChange={(e) => onChange(e.target.value)}
                 className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-violet-500 focus:border-violet-500 sm:text-lg text-black py-2 px-3"
             />

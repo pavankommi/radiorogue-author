@@ -26,7 +26,8 @@ const AddPost = () => {
     const [editorContent, setEditorContent] = useState<string>(''); // State to hold the editor content
     const [status, setStatus] = useState<'published' | 'draft'>('draft');
     const [categories, setCategories] = useState<string[]>([]);
-    const [postedBy, setPostedBy] = useState<string>('');
+    const [postedBy, setPostedBy] = useState<string>(''); //66d7b8466e7f3bddb2563867 mine
+    const [isLoading, setIsLoading] = useState(false);
 
     // Handle category change and enforce the 3-category limit
     const handleCategoryChange = (selectedCategories: string[]) => {
@@ -38,11 +39,21 @@ const AddPost = () => {
     };
 
     // Prepare and send the blog post data
-    const handlePostBlog = () => {
-        // Prepare the blog post data
+    const handlePostBlog = async () => {
+        if (!heading || !shortSummary || !articleAuthor || !editorContent) {
+            alert('Please fill in all required fields.');
+            return;
+        }
+
+        if (!window.confirm('Are you sure you want to post this blog?')) {
+            return;
+        }
+
+        setIsLoading(true);
+
         const blogPost = {
             heading,
-            slug: heading ? generateSlug(heading) : '', // Generate slug from heading
+            slug: heading ? generateSlug(heading) : '',
             shortSummary,
             articleAuthor,
             source,
@@ -53,7 +64,7 @@ const AddPost = () => {
                 description: imageDescription,
                 imageSrc: imageSource
             },
-            content: editorContent, // Store the editor content here
+            content: editorContent,
             status,
             categories,
             postedBy,
@@ -61,17 +72,35 @@ const AddPost = () => {
 
         console.log("Blog post data:", blogPost);
 
-        // Send blogPost to your server or API
-        // Example API call:
-        // fetch('/api/blog', {
-        //     method: 'POST',
-        //     headers: { 'Content-Type': 'application/json' },
-        //     body: JSON.stringify(blogPost),
-        // })
-        // .then(response => response.json())
-        // .then(data => console.log(data))
-        // .catch(error => console.error('Error:', error));
+        try {
+            const response = await fetch('http://localhost:3000/api/blog/create', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(blogPost),
+            });
+
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.includes('application/json')) {
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert('Blog post saved successfully!');
+                    // Additional actions can be added here
+                } else {
+                    alert(`Failed to save blog post: ${data.error || 'Unknown error'}`);
+                }
+            } else {
+                console.error('Unexpected content type:', contentType);
+                alert('Failed to save blog post: Unexpected response format');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('An error occurred while saving the blog post.');
+        } finally {
+            setIsLoading(false);
+        }
     };
+
 
     // Function to generate a slug from heading (you might need to adjust it based on your needs)
     const generateSlug = (heading: string) => {
