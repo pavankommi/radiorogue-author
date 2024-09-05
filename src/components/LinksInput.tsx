@@ -25,31 +25,31 @@ const LinksInput: React.FC<LinksInputProps> = ({ links, setLinks }) => {
 
     return (
         <div className="mt-4">
-            <label className="block text-lg font-medium text-black mb-2">
+            <label className="block text-lg font-medium text-black">
                 Links
             </label>
             {links.map((link, index) => (
-                <div key={index} className="flex mb-2">
+                <div key={index} className="flex mb-2 space-x-2">
                     <input
                         type="text"
                         placeholder="Link URL"
                         value={link.url}
                         onChange={(e) => handleLinkChange(index, 'url', e.target.value)}
-                        className="mr-2 block w-1/2 text-black p-2 border border-gray-300 rounded-lg"
+                        className="block w-1/2 bg-transparent focus:outline-none sm:text-lg text-black py-2 px-3"
                     />
                     <input
                         type="text"
                         placeholder="Link Text"
                         value={link.text}
                         onChange={(e) => handleLinkChange(index, 'text', e.target.value)}
-                        className="block w-1/2 text-black p-2 border border-gray-300 rounded-lg"
+                        className="block w-1/2 bg-transparent focus:outline-none sm:text-lg text-black py-2 px-3"
                     />
                 </div>
             ))}
             <button
                 type="button"
                 onClick={handleAddLink}
-                className="mt-2 p-2 bg-blue-500 text-white rounded-lg"
+                className="mt-2 p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
             >
                 Add Link
             </button>

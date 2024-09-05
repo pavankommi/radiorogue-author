@@ -11,7 +11,6 @@ import OrderedList from '@tiptap/extension-ordered-list';
 import CodeBlock from '@tiptap/extension-code-block';
 import { TipTapEditorProps } from '../types/types';
 
-// Define a type for editor actions
 type EditorAction = 'toggleBold' | 'toggleItalic' | 'toggleUnderline' | 'toggleCode' | 'toggleBlockquote' | 'toggleOrderedList' | 'toggleCodeBlock';
 
 const TipTapEditor: React.FC<TipTapEditorProps> = ({ content, setContent }) => {
@@ -42,7 +41,6 @@ const TipTapEditor: React.FC<TipTapEditorProps> = ({ content, setContent }) => {
         return null;
     }
 
-    // Define a mapping for editor actions to commands
     const actionMap: Record<EditorAction, () => void> = {
         toggleBold: () => editor.chain().focus().toggleBold().run(),
         toggleItalic: () => editor.chain().focus().toggleItalic().run(),
@@ -65,20 +63,21 @@ const TipTapEditor: React.FC<TipTapEditorProps> = ({ content, setContent }) => {
 
     return (
         <div className="mt-7">
-            <h2 className="text-2xl font-bold text-black mb-4">Blog Content Editor</h2>
+            <h2 className="block text-lg font-medium text-black">Blog Content Editor</h2>
             <div className="mb-4">
-                <div className="flex space-x-2 mb-2">
+                <div className="flex space-x-2 my-4">
                     {buttonConfig.map(({ action, label, isActive }) => (
                         <button
                             key={action}
                             onClick={() => actionMap[action as EditorAction]()}
-                            className={`px-3 py-1 rounded ${isActive ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+                            className={`px-2 py-1 rounded text-sm font-medium transition-colors duration-150 ${isActive ? 'bg-blue-500 text-white' : 'bg-gray-200 hover:bg-gray-300'}`}
                         >
                             {label}
                         </button>
                     ))}
+
                 </div>
-                <div className="border border-gray-300 p-6 min-h-[500px] text-black bg-white">
+                <div className="border border-gray-300 p-6 min-h-[500px] text-black bg-white rounded-lg shadow-sm">
                     <EditorContent editor={editor} />
                 </div>
             </div>

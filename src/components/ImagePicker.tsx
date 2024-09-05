@@ -67,9 +67,11 @@ const ImagePicker: React.FC<ImagePickerProps> = ({
     };
 
     return (
-        <div className="mt-4">
-            <h2 className="text-2xl font-bold text-black mb-4">Image Picker</h2>
-            <div className="flex items-center space-x-4">
+        <div className="my-4">
+            <label className="block text-lg font-medium text-black mb-3">
+                Upload image
+            </label>
+            <div className="flex items-center space-x-4 mt-1">
                 <input
                     ref={fileInputRef}
                     type="file"
@@ -102,7 +104,8 @@ const ImagePicker: React.FC<ImagePickerProps> = ({
                             id="image-source"
                             value={imageSource}
                             onChange={(e) => setImageSource(e.target.value)}
-                            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-violet-500 focus:border-violet-500 sm:text-lg text-black py-2 px-3"
+                            placeholder="Enter image source URL"
+                            className="mt-1 block w-full bg-transparent focus:outline-none sm:text-lg text-black py-2 px-3"
                         />
                     </div>
                     <div className="mt-4">
@@ -112,7 +115,8 @@ const ImagePicker: React.FC<ImagePickerProps> = ({
                             id="alt-text"
                             value={altText}
                             onChange={(e) => setAltText(e.target.value)}
-                            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-violet-500 focus:border-violet-500 sm:text-lg text-black py-2 px-3"
+                            placeholder="Enter alt text for the image"
+                            className="mt-1 block w-full bg-transparent focus:outline-none sm:text-lg text-black py-2 px-3"
                         />
                     </div>
                     <div className="mt-4">
@@ -121,8 +125,9 @@ const ImagePicker: React.FC<ImagePickerProps> = ({
                             id="image-description"
                             value={imageDescription}
                             onChange={(e) => setImageDescription(e.target.value)}
+                            placeholder="Enter a description for the image"
                             rows={6}
-                            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-violet-500 focus:border-violet-500 sm:text-lg text-black py-2 px-3"
+                            className="mt-1 block w-full bg-transparent focus:outline-none sm:text-lg text-black py-2 px-3 h-28 resize-none"
                         />
                     </div>
                 </div>

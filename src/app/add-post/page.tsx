@@ -6,8 +6,11 @@ import LinksInput from '@/components/LinksInput';
 import ShortSummaryInput from '@/components/ShortSummaryInput';
 import SourceInput from '@/components/SourceInput';
 import dynamic from 'next/dynamic';
-import { Link } from '../../types/types'; // Adjust the path if necessary
-import { toast, Toaster } from 'react-hot-toast'; // Import React Hot Toast
+import { Link } from '../../types/types';
+import { toast, Toaster } from 'react-hot-toast';
+import PostedByInput from '@/components/PostedByInput';
+import CategoriesCheckboxes from '@/components/CategoriesCheckboxes';
+import StatusRadioGroup from '@/components/StatusRadioGroup';
 
 const TipTapEditor = dynamic(() => import('../../components/TipTapEditor'), {
     ssr: false,
@@ -24,10 +27,10 @@ const AddPost = () => {
     const [imageSource, setImageSource] = useState<string>('');
     const [altText, setAltText] = useState<string>('');
     const [imageDescription, setImageDescription] = useState<string>('');
-    const [editorContent, setEditorContent] = useState<string>(''); // State to hold the editor content
+    const [editorContent, setEditorContent] = useState<string>('');
     const [status, setStatus] = useState<'published' | 'draft'>('draft');
     const [categories, setCategories] = useState<string[]>([]);
-    const [postedBy, setPostedBy] = useState<string>(''); //66d7b8466e7f3bddb2563867 mine
+    const [postedBy, setPostedBy] = useState<string>('');
     const [isLoading, setIsLoading] = useState(false);
 
     const resetForm = () => {
@@ -46,7 +49,6 @@ const AddPost = () => {
         setPostedBy('');
     };
 
-    // Handle category change and enforce the 3-category limit
     const handleCategoryChange = (selectedCategories: string[]) => {
         if (selectedCategories.length <= 3) {
             setCategories(selectedCategories);
@@ -55,7 +57,6 @@ const AddPost = () => {
         }
     };
 
-    // Prepare and send the blog post data
     const handlePostBlog = async () => {
         if (!heading || !shortSummary || !articleAuthor || !editorContent) {
             toast.error('Please fill in all required fields.');
@@ -87,8 +88,6 @@ const AddPost = () => {
             postedBy,
         };
 
-        console.log("Blog post data:", blogPost);
-
         try {
             const response = await fetch('http://localhost:3000/api/blog/create', {
                 method: 'POST',
@@ -102,64 +101,67 @@ const AddPost = () => {
 
                 if (response.ok) {
                     toast.success('Blog post saved successfully!');
-                    resetForm(); // Reset the form on successful post
-                    // Additional actions can be added here
+                    resetForm();
                 } else {
                     toast.error(`Failed to save blog post: ${data.error || 'Unknown error'}`);
                 }
             } else {
-                console.error('Unexpected content type:', contentType);
                 toast.error('Failed to save blog post: Unexpected response format');
             }
         } catch (error) {
-            console.error('Error:', error);
             toast.error('An error occurred while saving the blog post.');
         } finally {
             setIsLoading(false);
         }
     };
 
-    // Function to generate a slug from heading (you might need to adjust it based on your needs)
     const generateSlug = (heading: string) => {
-        return heading.toLowerCase().replace(/\s+/g, '-') // Replace spaces with hyphens
-            .replace(/[^\w\-]+/g, '') // Remove non-word characters
-            .replace(/\-\-+/g, '-') // Replace multiple hyphens with a single hyphen
-            .replace(/^-+/, '') // Remove leading hyphens
-            .replace(/-+$/, ''); // Remove trailing hyphens
+        return heading.toLowerCase().replace(/\s+/g, '-')
+            .replace(/[^\w\-]+/g, '')
+            .replace(/\-\-+/g, '-')
+            .replace(/^-+/, '')
+            .replace(/-+$/, '');
     };
 
     return (
-        <div className="container mx-auto p-6 bg-white rounded-lg shadow-lg max-w-3xl"> {/* Increased width */}
-            <Toaster /> {/* Add the Toaster component */}
-            <h1 className="text-3xl font-bold mb-6 text-center text-gray-800">Write a New Blog Post</h1>
+        <div className="container mx-auto p-4 bg-white rounded max-w-3xl mt-16">
+            <Toaster />
+            <h1 className="text-2xl font-semibold mb-4 text-center text-gray-700">New Blog Post</h1>
 
-            <div className="space-y-4">
+            <div className="space-y-3">
                 <HeadingInput
-                    label="Blog Heading"
-                    placeholder="Enter your blog heading"
+                    label="Heading"
+                    placeholder="Blog heading"
                     value={heading}
                     onChange={setHeading}
                 />
 
                 <HeadingInput
                     label="Slug"
-                    placeholder="Enter a URL-friendly slug"
-                    value={generateSlug(heading)} // Show generated slug
-                    onChange={() => { }} // No-op function
+                    placeholder="Auto-generated slug"
+                    value={generateSlug(heading)}
+                    onChange={() => { }}
                 />
 
                 <ShortSummaryInput
-                    label="Short Summary"
-                    placeholder="Enter a brief summary of your blog post"
+                    label="Summary"
+                    placeholder="Brief summary"
                     value={shortSummary}
                     onChange={setShortSummary}
                 />
 
                 <HeadingInput
-                    label="Article Author"
-                    placeholder="Enter the author name"
+                    label="Author"
+                    placeholder="Author name"
                     value={articleAuthor}
                     onChange={setArticleAuthor}
+                />
+
+                <PostedByInput
+                    label="Posted By"
+                    placeholder="Enter your name"
+                    value={postedBy}
+                    onChange={setPostedBy}
                 />
 
                 <ImagePicker
@@ -180,7 +182,7 @@ const AddPost = () => {
 
                 <SourceInput
                     label="Source"
-                    placeholder="Enter the source of your information"
+                    placeholder="Information source"
                     value={source}
                     onChange={setSource}
                 />
@@ -190,53 +192,26 @@ const AddPost = () => {
                     setLinks={setLinks}
                 />
 
-                <div>
-                    <label className="block text-sm font-medium text-gray-700">Categories</label>
-                    <select
-                        multiple
-                        value={categories}
-                        onChange={(e) => handleCategoryChange(Array.from(e.target.selectedOptions, option => option.value))}
-                        className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500"
+                <CategoriesCheckboxes
+                    categories={categories}
+                    handleCategoryChange={handleCategoryChange}
+                />
+
+                <StatusRadioGroup
+                    status={status}
+                    setStatus={setStatus}
+                />
+
+                <div className='mt-24'>
+                    <button
+                        onClick={handlePostBlog}
+                        className="mt-4 w-full bg-red-500 text-white font-medium py-2 rounded hover:bg-red-600 transition"
+                        disabled={isLoading}
                     >
-                        <option value="whats-hot">What's Hot</option>
-                        <option value="rogues-pick">Rogue's Pick</option>
-                        <option value="tech-pulse">Tech Pulse</option>
-                        <option value="money-moves">Money Moves</option>
-                        <option value="sport">Sport</option>
-                        <option value="style-code">Style Code</option>
-                    </select>
-                    <p className="text-sm text-gray-500 mt-1">Select up to 3 categories.</p>
+                        {isLoading ? 'Posting...' : 'Post Blog'}
+                    </button>
                 </div>
 
-                <div>
-                    <label className="block text-sm font-medium text-gray-700">Status</label>
-                    <select
-                        value={status}
-                        onChange={(e) => setStatus(e.target.value as 'published' | 'draft')}
-                        className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500"
-                    >
-                        <option value="draft">Draft</option>
-                        <option value="published">Published</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label className="block text-sm font-medium text-gray-700">Posted By</label>
-                    <input
-                        type="text"
-                        value={postedBy}
-                        onChange={(e) => setPostedBy(e.target.value)}
-                        className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500"
-                    />
-                </div>
-
-                <button
-                    onClick={handlePostBlog}
-                    className="mt-4 w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
-                    disabled={isLoading} // Disable the button while loading
-                >
-                    {isLoading ? 'Posting...' : 'Post Blog'}
-                </button>
             </div>
         </div>
     );

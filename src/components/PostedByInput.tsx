@@ -1,14 +1,14 @@
 "use client";
 import React from 'react';
 
-interface SourceInputProps {
+interface PostedByInputProps {
     label: string;
     placeholder?: string;
     value: string;
     onChange: (value: string) => void;
 }
 
-const SourceInput: React.FC<SourceInputProps> = ({ label, placeholder, value, onChange }) => {
+const PostedByInput: React.FC<PostedByInputProps> = ({ label, placeholder, value, onChange }) => {
     return (
         <div className="mt-4">
             <label className="block text-lg font-medium text-black">
@@ -25,4 +25,4 @@ const SourceInput: React.FC<SourceInputProps> = ({ label, placeholder, value, on
     );
 };
 
-export default SourceInput;
+export default PostedByInput;
