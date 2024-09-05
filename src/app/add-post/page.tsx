@@ -59,10 +59,29 @@ const AddPost = () => {
     };
 
     const handlePostBlog = async () => {
-        if (!heading || !shortSummary || !articleAuthor || !editorContent) {
-            toast.error('Please fill in all required fields.');
+        let errorMessages = [];
+
+        // Check each field for validation starting from the last
+        if (links.length === 0) errorMessages.push('At least one link is required.');
+        if (categories.length > 3) errorMessages.push('You can only select up to 3 categories.');
+        if (categories.length === 0) errorMessages.push('At least one category is required.');
+        if (!imageDescription) errorMessages.push('Image description is required.');
+        if (!altText) errorMessages.push('Alt text for the image is required.');
+        if (!imageSource) errorMessages.push('Image source is required.');
+        if (!selectedImage) errorMessages.push('An image is required.');
+        if (!postedBy) errorMessages.push('Posted By is required.');
+        if (!source) errorMessages.push('Source is required.');
+        if (!editorContent) errorMessages.push('Content is required.');
+        if (!articleAuthor) errorMessages.push('Author name is required.');
+        if (!shortSummary) errorMessages.push('Summary is required.');
+        if (!heading) errorMessages.push('Heading is required.');
+
+        // Display error messages if any fields are invalid
+        if (errorMessages.length > 0) {
+            errorMessages.forEach((message) => toast.error(message));
             return;
         }
+
 
         if (!window.confirm('Are you sure you want to post this blog?')) {
             return;
@@ -70,35 +89,41 @@ const AddPost = () => {
 
         setIsLoading(true);
 
-        const blogPost = {
-            heading,
-            slug: heading ? generateSlug(heading) : '',
-            shortSummary,
-            articleAuthor,
-            source,
-            links,
-            image: {
-                url: selectedImage || '',
-                altText,
-                description: imageDescription,
-                imageSrc: imageSource
-            },
-            content: editorContent,
-            status,
-            categories,
-            postedBy,
-        };
+        try {
+            const blogPost = {
+                heading,
+                slug: heading ? generateSlug(heading) : '',
+                shortSummary,
+                articleAuthor,
+                source,
+                links,
+                image: {
+                    url: selectedImage || '',
+                    altText,
+                    description: imageDescription,
+                    imageSrc: imageSource
+                },
+                content: editorContent,
+                status,
+                categories,
+                postedBy,
+            };
 
-        const result = await createBlogPost(blogPost);
+            const result = await createBlogPost(blogPost);
 
-        if (result.success) {
-            toast.success('Blog post saved successfully!');
-            resetForm();
-        } else {
-            toast.error(`Failed to save blog post: ${result.error || 'Unknown error'}`);
+            if (result.success) {
+                toast.success('Blog post saved successfully!');
+                resetForm();
+            } else {
+                toast.error(`Failed to save blog post: ${result.error || 'Unknown error'}`);
+            }
+        } catch (error: any) {
+            toast.error(`An error occurred: ${error.message}`);
+        } finally {
+            setIsLoading(false);
         }
-
     };
+
 
     const generateSlug = (heading: string) => {
         return heading.toLowerCase().replace(/\s+/g, '-')
