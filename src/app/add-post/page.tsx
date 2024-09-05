@@ -198,10 +198,12 @@ const AddPost = () => {
                         onChange={(e) => handleCategoryChange(Array.from(e.target.selectedOptions, option => option.value))}
                         className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500"
                     >
-                        <option value="showbiz">Showbiz</option>
-                        <option value="sport">Sport</option>
                         <option value="whats-hot">What's Hot</option>
                         <option value="rogues-pick">Rogue's Pick</option>
+                        <option value="tech-pulse">Tech Pulse</option>
+                        <option value="money-moves">Money Moves</option>
+                        <option value="sport">Sport</option>
+                        <option value="style-code">Style Code</option>
                     </select>
                     <p className="text-sm text-gray-500 mt-1">Select up to 3 categories.</p>
                 </div>
