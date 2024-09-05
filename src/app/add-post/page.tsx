@@ -11,6 +11,7 @@ import { toast, Toaster } from 'react-hot-toast';
 import PostedByInput from '@/components/PostedByInput';
 import CategoriesCheckboxes from '@/components/CategoriesCheckboxes';
 import StatusRadioGroup from '@/components/StatusRadioGroup';
+import { createBlogPost } from '@/api/blog';
 
 const TipTapEditor = dynamic(() => import('../../components/TipTapEditor'), {
     ssr: false,
@@ -88,31 +89,15 @@ const AddPost = () => {
             postedBy,
         };
 
-        try {
-            const response = await fetch('http://localhost:3000/api/blog/create', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(blogPost),
-            });
+        const result = await createBlogPost(blogPost);
 
-            const contentType = response.headers.get('content-type');
-            if (contentType && contentType.includes('application/json')) {
-                const data = await response.json();
-
-                if (response.ok) {
-                    toast.success('Blog post saved successfully!');
-                    resetForm();
-                } else {
-                    toast.error(`Failed to save blog post: ${data.error || 'Unknown error'}`);
-                }
-            } else {
-                toast.error('Failed to save blog post: Unexpected response format');
-            }
-        } catch (error) {
-            toast.error('An error occurred while saving the blog post.');
-        } finally {
-            setIsLoading(false);
+        if (result.success) {
+            toast.success('Blog post saved successfully!');
+            resetForm();
+        } else {
+            toast.error(`Failed to save blog post: ${result.error || 'Unknown error'}`);
         }
+
     };
 
     const generateSlug = (heading: string) => {
