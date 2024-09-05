@@ -1,5 +1,7 @@
 "use client";
 import React, { ChangeEvent, useRef, useState } from 'react';
+import imageCompression from 'browser-image-compression';
+import { uploadImage } from '@/api/upload';
 
 interface ImagePickerProps {
     selectedImage: string | null;
@@ -32,22 +34,29 @@ const ImagePicker: React.FC<ImagePickerProps> = ({
             setUploading(true);
             setError(null);
 
-            const formData = new FormData();
-            formData.append('file', file);
-
             try {
-                const response = await fetch('http://localhost:3000/api/upload', {
-                    method: 'POST',
-                    body: formData,
-                });
+                // Compress the image while keeping dimensions the same
+                const options = {
+                    maxSizeMB: 0.25, // Target size ~250KB
+                    useWebWorker: true, // Speed up compression
+                    initialQuality: 0.5, // Reduce quality to around 50%
+                    fileType: 'image/jpeg', // Force conversion to JPEG for better compression
+                    maxIteration: 10, // Allow multiple iterations for compression
+                };
 
-                if (!response.ok) {
-                    throw new Error('Failed to upload image');
+                const compressedFile = await imageCompression(file, options);
+                console.log('Original File Size:', (file.size / 1024).toFixed(2), 'KB');
+                console.log('Compressed File Size:', (compressedFile.size / 1024).toFixed(2), 'KB');
+
+                // Use the uploadImage function to send the compressed image
+                const result = await uploadImage(compressedFile);
+
+                if (result.success) {
+                    setSelectedImage(result.url); // Set the image URL
+                    setImageSource(result.url); // Set the image source to the uploaded URL
+                } else {
+                    throw new Error(result.error);
                 }
-
-                const data = await response.json();
-                setSelectedImage(data.url); // Set the image URL
-                setImageSource(data.url); // Set the image source to the uploaded URL
             } catch (error) {
                 setError('Error uploading the image');
             } finally {

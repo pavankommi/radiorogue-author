@@ -21,6 +21,7 @@
     "@tiptap/starter-kit": "^2.6.6",
     "aws-sdk": "^2.1688.0",
     "axios": "^1.7.4",
+    "browser-image-compression": "^2.0.2",
     "formidable": "^3.5.1",
     "next": "14.2.5",
     "react": "^18",
